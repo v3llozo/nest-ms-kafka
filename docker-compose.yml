@@ -1,0 +1,60 @@
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: "zookeeper:3.7"
+    ports:
+      - "2181:2181"
+
+  kafka:
+    container_name: kafka
+    image: "confluentinc/cp-kafka:latest"
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_KRAFT_BROKER_ID: 1
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - ./kafka-service/data:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
+      KAFKA_CLUSTERS_0_NAME: CLUSTERS
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+  #   # docker run -p 8080:8080 -e KAFKA_BROKERS=host.docker.internal:9092 docker.redpanda.com/redpandadata/console:latest
+
+  nest-ms:
+    container_name: nest-ms
+    build:
+      context: ./nest-ms
+      args:
+        - APP=user-identify
+      target: dev
+      dockerfile: Dockerfile
+    links:
+      - "kafka:kafka"
+    depends_on:
+      - kafka
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "3002:3002"
+    volumes:
+      - ./nest-ms:/nest-ms
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
