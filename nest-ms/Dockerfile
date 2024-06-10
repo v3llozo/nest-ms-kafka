@@ -6,6 +6,7 @@ ENV APP=${APP}
 
 ARG NODE_ENV=development 
 ENV NODE_ENV=${NODE_ENV}
+ENV KAFKA_BROKERS=${KAFKA_BROKERS}
 
 WORKDIR /nest-ms
 COPY package*.json .

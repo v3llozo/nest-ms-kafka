@@ -38,23 +38,78 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
   #   # docker run -p 8080:8080 -e KAFKA_BROKERS=host.docker.internal:9092 docker.redpanda.com/redpandadata/console:latest
 
-  nest-ms:
-    container_name: nest-ms
+  nest-ms-user-identify:
+    container_name: nest-ms-user-identify
     build:
       context: ./nest-ms
       args:
         - APP=user-identify
       target: dev
       dockerfile: Dockerfile
+    environment:
+      - KAFKA_BROKERS=kafka:9092
     links:
       - "kafka:kafka"
     depends_on:
       - kafka
     ports:
       - "3000:3000"
-      - "3001:3001"
-      - "3002:3002"
     volumes:
       - ./nest-ms:/nest-ms
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nest-ms-user-external-docs:
+    container_name: nest-ms-user-external-docs
+    build:
+      context: ./nest-ms
+      args:
+        - APP=user-external-docs
+      target: dev
+      dockerfile: Dockerfile
+    environment:
+      - PORT=3003
+      - KAFKA_BROKERS=kafka:9092
+    links:
+      - "kafka:kafka"
+    depends_on:
+      - kafka
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./nest-ms:/nest-ms
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nest-ms-srv-kafka:
+    container_name: nest-ms-srv-kafka
+    build:
+      context: ./nest-ms
+      args:
+        - APP=srv-kafka
+      target: dev
+      dockerfile: Dockerfile
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+    links:
+      - "kafka:kafka"
+    depends_on:
+      - kafka
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./nest-ms:/nest-ms
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  external-app:
+    container_name: external-app
+    build:
+      context: ./external-app
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./external-app:/external-app
     extra_hosts:
       - "host.docker.internal:host-gateway"

@@ -1,37 +1,19 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
-import {
-	Client,
-	ClientKafka,
-	Ctx,
-	MessagePattern,
-	Payload,
-	Transport,
-} from '@nestjs/microservices';
-import { UserIdentifyService } from './user-identify.service';
+import { Ctx, MessagePattern, Payload } from '@nestjs/microservices';
 import { SerializerService } from './serializer.service';
-import { ITransaction } from './transaction';
+import { ITransaction, TOPICS } from '@app/lib-kafka';
+import { UserIdentifyService } from './user-identify.service';
+import { KafkaService } from '@app/lib-kafka';
 
 @Controller()
 export class UserIdentifyController {
-	@Client({
-		transport: Transport.KAFKA,
-		options: {
-			client: {
-				clientId: 'user-identify',
-				brokers: ['kafka:9092'],
-			},
-			consumer: {
-				groupId: 'test',
-			},
-		},
-	})
-	client: ClientKafka;
-
 	constructor(
 		private readonly userIdentifyService: UserIdentifyService,
-		private serializer: SerializerService
+		private serializer: SerializerService,
+		private kafkaService: KafkaService
 	) {
 		console.log('UserIdentifyController.constructor');
+		this.kafkaService.setClientId('user-identify', 'user-identify');
 	}
 
 	@Get()
@@ -58,11 +40,24 @@ export class UserIdentifyController {
 		);
 
 		// dispatch a message to a kafka topic
-		this.client.emit('test', transaction);
+		this.userIdentifyService.dispatchMessage(transaction);
 		return res.status(200).send({ message: 'Sended for identification' });
 	}
 
-	@MessagePattern('test')
+	/**
+	 * Recives via HTTP a request to search in a topic history
+	 */
+	@Get('search/:uuid')
+	searchInTopic(@Req() req, @Res() res) {
+		const uuid = req.params.uuid;
+		console.log('UserIdentifyController.searchInTopic:uuid: ', uuid);
+		return res.send({ message: 'Searched', result: 0 });
+	}
+
+	/**
+	 * Listen
+	 */
+	@MessagePattern(TOPICS.UserIdentifyRecivedDocuments)
 	reciveMessage(@Payload() message: ITransaction, @Ctx() context) {
 		console.log(
 			`[UserIdentifyController:reciveMessage | Topic:${context.getTopic()} | Message:`

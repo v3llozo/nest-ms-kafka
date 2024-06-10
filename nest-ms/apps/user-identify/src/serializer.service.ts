@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ITransaction } from './transaction';
+import { ITransaction } from '@app/lib-kafka';
 
 @Injectable()
 export class SerializerService {

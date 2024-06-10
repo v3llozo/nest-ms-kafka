@@ -36,6 +36,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/user-external-docs/tsconfig.app.json"
       }
+    },
+    "srv-kafka": {
+      "type": "application",
+      "root": "apps/srv-kafka",
+      "entryFile": "main",
+      "sourceRoot": "apps/srv-kafka/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/srv-kafka/tsconfig.app.json"
+      }
+    },
+    "lib-kafka": {
+      "type": "library",
+      "root": "libs/lib-kafka",
+      "entryFile": "index",
+      "sourceRoot": "libs/lib-kafka/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/lib-kafka/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -1,29 +1,13 @@
+import { KafkaService } from '@app/lib-kafka';
 import { Module } from '@nestjs/common';
+import { SerializerService } from './serializer.service';
 import { UserIdentifyController } from './user-identify.controller';
 import { UserIdentifyService } from './user-identify.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { SerializerService } from './serializer.service';
 import { ValidatorController } from './validator.service';
 
 @Module({
-	imports: [
-		ClientsModule.register([
-			{
-				name: 'FIBO_SERVICE',
-				transport: Transport.KAFKA,
-				options: {
-					client: {
-						clientId: 'user-identify',
-						brokers: ['kafka:9092'],
-					},
-					consumer: {
-						groupId: 'test',
-					},
-				},
-			},
-		]),
-	],
+	imports: [],
 	controllers: [UserIdentifyController, ValidatorController],
-	providers: [UserIdentifyService, SerializerService],
+	providers: [UserIdentifyService, SerializerService, KafkaService],
 })
 export class UserIdentifyModule {}

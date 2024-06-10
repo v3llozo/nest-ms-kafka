@@ -27,4 +27,4 @@ Using NestJS, microservices were created to consume and produce messages in Kafk
 | --- | --- |
 | user-identify | Recive a external request and identify the user, emitting its documentation |
 | user-external-docs | Consumes the user documentation event and sends it to an external API |
-
+| srv-kafka | Logger for Kafka events |
