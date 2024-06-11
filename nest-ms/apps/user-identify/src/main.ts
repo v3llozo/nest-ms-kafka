@@ -11,12 +11,15 @@ async function bootstrap() {
 				client: {
 					brokers: [process.env.KAFKA_BROKERS],
 				},
+				consumer: {
+					groupId: 'user-identify',
+				},
 			},
 		}
 	);
 	await app.listen();
 
 	const httpApp = await NestFactory.create(UserIdentifyModule);
-	await httpApp.listen(3000);
+	await httpApp.listen(process.env.PORT || 3000);
 }
 bootstrap();

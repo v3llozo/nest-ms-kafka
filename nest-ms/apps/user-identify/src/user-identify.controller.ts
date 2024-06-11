@@ -1,19 +1,16 @@
+import { ITransaction, TOPICS } from '@app/lib-kafka';
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { Ctx, MessagePattern, Payload } from '@nestjs/microservices';
 import { SerializerService } from './serializer.service';
-import { ITransaction, TOPICS } from '@app/lib-kafka';
 import { UserIdentifyService } from './user-identify.service';
-import { KafkaService } from '@app/lib-kafka';
 
 @Controller()
 export class UserIdentifyController {
 	constructor(
 		private readonly userIdentifyService: UserIdentifyService,
-		private serializer: SerializerService,
-		private kafkaService: KafkaService
+		private serializer: SerializerService
 	) {
 		console.log('UserIdentifyController.constructor');
-		this.kafkaService.setClientId('user-identify', 'user-identify');
 	}
 
 	@Get()
