@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { UserExternalDocsModule } from './user-external-docs.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { UserExternalDocsModule } from './user-external-docs.module';
 
 async function bootstrap() {
 	const app = await NestFactory.createMicroservice<MicroserviceOptions>(

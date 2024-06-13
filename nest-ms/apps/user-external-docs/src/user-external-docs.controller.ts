@@ -1,21 +1,14 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
-import { UserExternalDocsService } from './user-external-docs.service';
-import {
-	ClientKafka,
-	Ctx,
-	MessagePattern,
-	Payload,
-} from '@nestjs/microservices';
 import { ITransaction, TOPICS } from '@app/lib-kafka';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Ctx, MessagePattern, Payload } from '@nestjs/microservices';
+import { UserExternalDocsService } from './user-external-docs.service';
 
 @Controller()
 export class UserExternalDocsController {
 	constructor(
-		@Inject('Kafka-service') private kafka: ClientKafka,
 		private readonly userExternalDocsService: UserExternalDocsService
 	) {
-		console.log('UserExternalDocsController');
-		console.log(this.kafka.getConsumerAssignments());
+		console.log('UserExternalDocsController.constructor');
 	}
 
 	@Get()
@@ -29,9 +22,9 @@ export class UserExternalDocsController {
 	}
 
 	/**
-	 * Listen - TOPICS.UserIdentifySendDocuments
+	 * Listen
 	 */
-	@MessagePattern('userIdentify.send.documents')
+	@MessagePattern(TOPICS.UserIdentifySendDocuments)
 	async recivedDocuments(@Payload() message: ITransaction, @Ctx() context) {
 		console.log(
 			'UserExternalDocsController:recivedDocuments:message: ',

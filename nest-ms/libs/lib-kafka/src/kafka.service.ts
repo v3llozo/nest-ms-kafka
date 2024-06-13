@@ -1,20 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class KafkaService {
-	// @Client({
-	// 	transport: Transport.KAFKA,
-	// 	options: {
-	// 		client: {
-	// 			clientId: 'kafka-service',
-	// 			brokers: [process.env.KAFKA_BROKERS],
-	// 		},
-	// 		consumer: {
-	// 			groupId: 'test',
-	// 		},
-	// 	},
-	// })
 	client: ClientKafka;
 	constructor() {
 		this.client = new ClientKafka({
