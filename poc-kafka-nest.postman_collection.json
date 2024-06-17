@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "119c48aa-e42d-4a31-8067-7040cd15b88f",
+		"name": "poc-kafka-nest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28636883"
+	},
+	"item": [
+		{
+			"name": "Ping",
+			"item": [
+				{
+					"name": "user-identify",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:3000",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3000"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "external-docs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:3003",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3003"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "srv-kafka",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:3001",
+							"host": [
+								"{{host}}"
+							],
+							"port": "3001"
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user-identify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"origin\": \"api\",\n    \"createdAt\": \"2024-06-05T13:00:00.000Z\",\n    \"userUuid\": \"003\",\n    \"data\": {\n        \"message\": \"fifth\",\n        \"file\":\"000000000000000000000000000000000000000000000000000000\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:3000",
+					"host": [
+						"{{host}}"
+					],
+					"port": "3000"
+				},
+				"description": "The endpoint makes an HTTP POST request to {{host}}:3000 with a JSON payload in the raw request body. The request body includes the \"origin\", \"createdAt\", \"userUuid\", and \"data\" parameters. The \"createdAt\" parameter is populated with the current timestamp, and the \"data\" parameter contains a \"message\" value.\n\n### Request Body\n\n- origin (string): Specifies the origin as \"api\".\n    \n- createdAt (string): Represents the creation timestamp.\n    \n- userUuid (string): Represents the user's UUID.\n    \n- data (object): Contains the \"message\" attribute with a value.\n    \n\nThe response to the request has a status code of 400 and a Content-Type of application/json. The response body is a JSON object with \"message\", \"error\", and \"statusCode\" properties.\n\n### Response Body (JSON Schema)\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"message\": {\"type\": \"string\"},\n        \"error\": {\"type\": \"string\"},\n        \"statusCode\": {\"type\": \"number\"}\n    }\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "search user messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:3000/search/123",
+					"host": [
+						"{{host}}"
+					],
+					"port": "3000",
+					"path": [
+						"search",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-external-docs | Send to external-app",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"uuid\":\"321\",\n    \"url\":\"http://localhost:3003/webhook\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:3003",
+					"host": [
+						"{{host}}"
+					],
+					"port": "3003"
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.globals.set(\"now\", new Date().toISOString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost",
+			"type": "string"
+		}
+	]
+}
